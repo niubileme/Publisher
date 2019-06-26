@@ -33,7 +33,8 @@ namespace PublisherServer
 
         static void appServer_NewSessionConnected(TestSession session)
         {
-            session.Send(session.RemoteEndPoint.ToString());
+            Console.WriteLine("新连接："+session.RemoteEndPoint.ToString());
+            //session.Send(session.RemoteEndPoint.ToString());
         }
     }
 }

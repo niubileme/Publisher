@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PublisherServer
 {
-   public class TestSession : AppSession<TestSession>
+   public class TestSession : AppSession<TestSession, TestRequestInfo>
     {
         public int CustomID { get; set; }
         public string CustomName { get; set; }
@@ -26,7 +26,7 @@ namespace PublisherServer
         /// 未知的用户请求命令
         /// </summary>
         /// <param name="requestInfo"></param>
-        protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
+        protected override void HandleUnknownRequest(TestRequestInfo requestInfo)
         {
             Console.WriteLine("未知的用户请求命令 "+requestInfo.ToString());
             base.HandleUnknownRequest(requestInfo);
