@@ -10,5 +10,12 @@ namespace PublisherServer
     public class TestRequestInfo : IRequestInfo
     {
         public string Key { get; set; }
+        public TestPacket Packet { get; set; }
+
+        public TestRequestInfo(string key, TestPacket packet)
+        {
+            Key = key;
+            Packet = packet;
+        }
     }
 }

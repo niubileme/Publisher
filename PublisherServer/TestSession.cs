@@ -38,6 +38,7 @@ namespace PublisherServer
         /// <param name="reason"></param>
         protected override void OnSessionClosed(CloseReason reason)
         {
+            Console.WriteLine("用户已断开");
             base.OnSessionClosed(reason);
         }
 

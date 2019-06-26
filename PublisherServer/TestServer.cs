@@ -1,13 +1,11 @@
 ﻿using SuperSocket.SocketBase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PublisherServer
 {
-    public class TestServer : AppServer<TestSession>
+    public class TestServer : AppServer<TestSession, TestRequestInfo>
     {
+        public TestServer() : base(new TestReceiveFilterFactory())
+        {
+        }
     }
 }

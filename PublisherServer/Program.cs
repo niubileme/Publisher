@@ -1,10 +1,6 @@
-﻿using SuperSocket.SocketBase;
-using SuperSocket.SocketBase.Protocol;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PublisherServer
 {
@@ -14,8 +10,8 @@ namespace PublisherServer
         {
             var appServer = new TestServer();
             appServer.Setup(2012);
-            appServer.NewSessionConnected += new SessionHandler<TestSession>(appServer_NewSessionConnected);
-            appServer.NewRequestReceived += AppServer_NewRequestReceived;
+            appServer.NewSessionConnected += appServer_NewSessionConnected;
+            appServer.NewRequestReceived += appServer_NewRequestReceived;
             appServer.Start();
             while (Console.ReadKey().KeyChar != 'q')
             {
@@ -25,16 +21,37 @@ namespace PublisherServer
             appServer.Stop();
         }
 
-        private static void AppServer_NewRequestReceived(TestSession session,StringRequestInfo requestInfo)
+        private static void appServer_NewRequestReceived(TestSession session, TestRequestInfo requestInfo)
         {
-            Console.WriteLine(requestInfo.Key);
-            Console.WriteLine(requestInfo.Body);
+            try
+            {
+                var packet = requestInfo.Packet;
+                var type = Convert.ToInt32(packet.Type);
+                if (type == 0)
+                {
+                    var command = Encoding.UTF8.GetString(packet.Body);
+                    Console.WriteLine("收到命令：" + command);
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream("1.zip", FileMode.Create, FileAccess.Read))
+                    {
+                        fs.Write(packet.Body, 0, (int)packet.Lenght);
+                    }
+                    Console.WriteLine("保存文件成功！");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         static void appServer_NewSessionConnected(TestSession session)
         {
-            Console.WriteLine("新连接："+session.RemoteEndPoint.ToString());
-            //session.Send(session.RemoteEndPoint.ToString());
+            Console.WriteLine("新连接：" + session.RemoteEndPoint.ToString());
+            session.Send(session.RemoteEndPoint.ToString() + " Welcome!");
         }
     }
 }
