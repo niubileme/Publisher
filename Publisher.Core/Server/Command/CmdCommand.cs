@@ -1,4 +1,5 @@
-﻿using SuperSocket.SocketBase;
+﻿using Publisher.Core.Logging;
+using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Command;
 using SuperSocket.SocketBase.Protocol;
 using System;
@@ -14,11 +15,14 @@ namespace Publisher.Core.Server.Command
     /// </summary>
     public class CmdCommand : StringCommandBase
     {
+        private ILogger _log = LoggerFactory.GetLogger2("Commands");
+
         public override string Name => "CMD";
 
         public override void ExecuteCommand(AppSession session, StringRequestInfo requestInfo)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(session.CurrentCommand);
+            Console.WriteLine(requestInfo.Body);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace PublisherServer
     {
         static void Main(string[] args)
         {
-            var appServer = new TestServer();
+            var appServer = new NetServer();
             appServer.Setup(2012);
             appServer.NewSessionConnected += appServer_NewSessionConnected;
             appServer.NewRequestReceived += appServer_NewRequestReceived;
