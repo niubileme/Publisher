@@ -16,11 +16,11 @@ namespace Publisher.Core.Server.Command
     /// </summary>
     public class CmdCommand : StringCommandBase<NetSession>
     {
+        private object _obj = new object();
         private ILogger _log = LoggerFactory.GetLogger2("Commands");
 
         public override string Name => "CMD";
 
-        private object _obj = new object();
         public override void ExecuteCommand(NetSession session, StringRequestInfo requestInfo)
         {
             try
