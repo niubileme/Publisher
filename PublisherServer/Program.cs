@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Publisher.Core;
+using System;
 using System.IO;
 using System.Text;
 
@@ -8,17 +9,25 @@ namespace PublisherServer
     {
         static void Main(string[] args)
         {
-            var appServer = new NetServer();
-            appServer.Setup(2012);
-            appServer.NewSessionConnected += appServer_NewSessionConnected;
-            appServer.NewRequestReceived += appServer_NewRequestReceived;
-            appServer.Start();
+            var server = ServerService.Initialize();
+
+            if (!server.Start())
+            {
+                Console.WriteLine("Failed to start!");
+                Console.ReadKey();
+                return;
+            }
+
             while (Console.ReadKey().KeyChar != 'q')
             {
                 Console.WriteLine();
                 continue;
             }
-            appServer.Stop();
+
+            server.Stop();
+
+            Console.WriteLine("The server was stopped!");
+
         }
     }
 }

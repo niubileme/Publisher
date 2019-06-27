@@ -60,11 +60,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PublisherCore\PublisherCore.csproj">
-      <Project>{1CC8E81E-F032-40D1-90F9-BD2D12A86ACE}</Project>
-      <Name>PublisherCore</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
