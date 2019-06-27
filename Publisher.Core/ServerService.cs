@@ -22,8 +22,7 @@ namespace Publisher.Core
 
             _server = new NetServer();
             _server.Setup(2012);
-            _server.NewSessionConnected += NetServer_NewSessionConnected;
-            _server.NewRequestReceived += NetServer_NewRequestReceived;
+
 
         }
 
@@ -53,14 +52,5 @@ namespace Publisher.Core
         }
 
 
-        private void NetServer_NewRequestReceived(NetSession session, StringRequestInfo requestInfo)
-        {
-            Console.WriteLine("收到新消息");
-        }
-
-        private void NetServer_NewSessionConnected(NetSession session)
-        {
-            Console.WriteLine("新用户");
-        }
     }
 }

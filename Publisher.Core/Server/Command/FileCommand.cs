@@ -13,13 +13,13 @@ namespace Publisher.Core.Server.Command
     /// <summary>
     /// 传输文件
     /// </summary>
-    public class FileCommand : StringCommandBase
+    public class FileCommand : StringCommandBase<NetSession>
     {
         private ILogger _log = LoggerFactory.GetLogger2("Commands");
 
         public override string Name => "FILE";
 
-        public override void ExecuteCommand(AppSession session, StringRequestInfo requestInfo)
+        public override void ExecuteCommand(NetSession session, StringRequestInfo requestInfo)
         {
             throw new NotImplementedException();
         }

@@ -18,6 +18,8 @@ namespace PublisherServer
                 return;
             }
 
+            Console.WriteLine("The server was start!");
+
             while (Console.ReadKey().KeyChar != 'q')
             {
                 Console.WriteLine();
