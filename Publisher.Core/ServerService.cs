@@ -22,8 +22,13 @@ namespace Publisher.Core
 
             _server = new NetServer();
             _server.Setup(2012);
+            _server.NewRequestReceived += _server_NewRequestReceived;
 
+        }
 
+        private void _server_NewRequestReceived(NetSession session, StringRequestInfo requestInfo)
+        {
+            throw new NotImplementedException();
         }
 
         public static ServerService Initialize(ServerSettings settings = null)

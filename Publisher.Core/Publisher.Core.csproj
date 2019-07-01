@@ -65,14 +65,12 @@
     <Compile Include="ServerSettings.cs" />
     <Compile Include="Server\Command\CmdCommand.cs" />
     <Compile Include="Server\Command\FileCommand.cs" />
+    <Compile Include="Server\NetPacket.cs" />
+    <Compile Include="Server\NetReceiveFilter.cs" />
+    <Compile Include="Server\NetReceiveFilterFactory.cs" />
+    <Compile Include="Server\NetRequestInfo.cs" />
     <Compile Include="Server\NetServer.cs" />
     <Compile Include="Server\NetSession.cs" />
-    <Compile Include="TestServer\TestPacket.cs" />
-    <Compile Include="TestServer\TestReceiveFilter.cs" />
-    <Compile Include="TestServer\TestReceiveFilterFactory.cs" />
-    <Compile Include="TestServer\TestRequestInfo.cs" />
-    <Compile Include="TestServer\TestServer.cs" />
-    <Compile Include="TestServer\TestSession.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

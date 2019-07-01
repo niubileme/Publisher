@@ -1,5 +1,6 @@
 ﻿using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Config;
+using SuperSocket.SocketBase.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,7 @@ using System.Threading.Tasks;
 
 namespace Publisher.Core.Server
 {
-    public class NetServer : AppServer<NetSession>
+    public class NetServer : AppServer<NetSession, NetRequestInfo>
     {
-        protected override bool Setup(IRootConfig rootConfig, IServerConfig config)
-        {
-            return base.Setup(rootConfig, config);
-        }
     }
 }

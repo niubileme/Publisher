@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Publisher.Core.Server
 {
-    public class NetSession : AppSession<NetSession>
+    public class NetSession : AppSession<NetSession, NetRequestInfo>
     {
         /// <summary>
         /// 用户连接会话
@@ -23,7 +23,7 @@ namespace Publisher.Core.Server
         /// 未知的用户请求命令
         /// </summary>
         /// <param name="requestInfo"></param>
-        protected override void HandleUnknownRequest(StringRequestInfo requestInfo)
+        protected override void HandleUnknownRequest(NetRequestInfo requestInfo)
         {
             Console.WriteLine("未知的用户请求命令 " + requestInfo.ToString());
             base.HandleUnknownRequest(requestInfo);
