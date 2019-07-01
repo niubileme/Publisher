@@ -81,7 +81,6 @@ namespace Publisher.Core
                 return;
 
             var packet = requestInfo.Packet;
-
             //判断数据包是否接收完成
             if (packet.PacketIndex != packet.PacketCount)
             {
