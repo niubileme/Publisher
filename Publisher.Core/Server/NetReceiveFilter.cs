@@ -49,7 +49,7 @@ namespace Publisher.Core.Server
                 return null;
 
             myData.PacketIndex = BitConverter.ToUInt16(data, 11);//数据包索引 2字节 6+1+4
-            myData.PacketCount = BitConverter.ToUInt16(data, 13);//数据包索引 2字节 6+1+4+2
+            myData.PacketCount = BitConverter.ToUInt16(data, 13);//数据包总数 2字节 6+1+4+2
             myData.Flag = data[15];//flag 1字节
             myData.Body = new byte[myData.Lenght];//主体消息
             Buffer.BlockCopy(data, 16, myData.Body, 0, (int)myData.Lenght);
