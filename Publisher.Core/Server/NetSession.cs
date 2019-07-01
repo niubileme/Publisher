@@ -38,7 +38,6 @@ namespace Publisher.Core.Server
             Console.WriteLine("用户已断开:" + reason.ToString());
             base.OnSessionClosed(reason);
         }
-
-
+        
     }
 }

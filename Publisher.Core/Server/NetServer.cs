@@ -11,5 +11,6 @@ namespace Publisher.Core.Server
 {
     public class NetServer : AppServer<NetSession, NetRequestInfo>
     {
+        
     }
 }
