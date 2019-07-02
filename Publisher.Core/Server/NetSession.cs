@@ -1,6 +1,7 @@
 ﻿using SuperSocket.SocketBase;
 using SuperSocket.SocketBase.Protocol;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,14 @@ namespace Publisher.Core.Server
 {
     public class NetSession : AppSession<NetSession, NetRequestInfo>
     {
+        public int _count;
+        public ConcurrentDictionary<int, Queue<NetPacket>> _messages;
+
+        public NetSession()
+        {
+            _messages = new ConcurrentDictionary<int, Queue<NetPacket>>();
+        }
+
         /// <summary>
         /// 用户连接会话
         /// </summary>
@@ -38,6 +47,6 @@ namespace Publisher.Core.Server
             Console.WriteLine("用户已断开:" + reason.ToString());
             base.OnSessionClosed(reason);
         }
-        
+
     }
 }

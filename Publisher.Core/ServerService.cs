@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Publisher.Core
@@ -76,43 +77,65 @@ namespace Publisher.Core
 
         private void Server_NewRequestReceived(NetSession session, NetRequestInfo requestInfo)
         {
-            var queue = new Queue<NetPacket>();
-            if (!_sessionDic.TryGetValue(session.SessionID, out queue))
-                return;
+            lock (_obj)
+            {
+                var packet = requestInfo.Packet;
 
-            var packet = requestInfo.Packet;
-            //判断数据包是否接收完成
-            if (packet.PacketIndex != packet.PacketCount)
-            {
-                queue.Enqueue(packet);
-                return;
-            }
-            else
-            {
-                var type = (int)packet.Type;
-                switch (type)
+                var message = new Queue<NetPacket>();
+                if (!session._messages.TryGetValue(session._count, out message))
                 {
-                    case 0:
-                        ProcessText(session, requestInfo);
-                        break;
-                    case 1:
-                        ProcessFile(session, requestInfo);
-                        break;
-                    default:
-                        ProcessText(session, requestInfo);
-                        break;
+                    Interlocked.Increment(ref session._count);
+                    session._messages.TryAdd(session._count, message);
                 }
+                message.Enqueue(packet);
             }
+
+
+            //var queue = new Queue<NetPacket>();
+            //if (!_sessionDic.TryGetValue(session.SessionID, out queue))
+            //    return;
+
+
+            //if (packet.PacketCount == 1)
+            //{
+            //    if (packet.PacketIndex != 1)
+            //        return;
+
+            //    var type = (int)packet.Type;
+            //    switch (type)
+            //    {
+            //        case 0:
+            //            ProcessSingleText(session, packet);
+            //            break;
+            //        case 1:
+            //            ProcessSingleFile(session, packet);
+            //            break;
+            //        default:
+            //            ProcessSingleText(session, packet);
+            //            break;
+            //    }
+            //}
+            //else
+            //{
+            //    queue.Enqueue(packet);
+            //    if (packet.PacketIndex == 1)
+            //    {
+            //        Task.Factory.StartNew(() =>
+            //        {
+            //            ProcessMultiplePackets(session);
+            //        });
+            //    }
+            //}
 
         }
 
 
-        private void ProcessText(NetSession session, NetRequestInfo requestInfo)
+        private void ProcessSingleText(NetSession session, NetPacket packet)
         {
             string cmd = "";
             try
             {
-                cmd = Encoding.UTF8.GetString(requestInfo.Packet.Body);
+                cmd = Encoding.UTF8.GetString(packet.Body);
                 var result = CmdHelper.ExecuteCmd(cmd);
 
                 var bytes = Encoding.Default.GetBytes(result);
@@ -125,7 +148,12 @@ namespace Publisher.Core
             }
         }
 
-        private void ProcessFile(NetSession session, NetRequestInfo requestInfo)
+        private void ProcessSingleFile(NetSession session, NetPacket packet)
+        {
+
+        }
+
+        private void ProcessMultiplePackets(NetSession session)
         {
 
         }
