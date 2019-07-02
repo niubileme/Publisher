@@ -81,13 +81,29 @@ namespace Publisher.Core
             {
                 var packet = requestInfo.Packet;
 
-                var message = new Queue<NetPacket>();
-                if (!session._messages.TryGetValue(session._count, out message))
+                //var message = new Queue<NetPacket>();
+                //if (!session._messages.TryGetValue(session._count, out message))
+                //{
+                //    Interlocked.Increment(ref session._count);
+                //    session._messages.TryAdd(session._count, message);
+                //}
+
+                if (packet.PacketIndex == 1)
                 {
                     Interlocked.Increment(ref session._count);
+                    var message = new Queue<NetPacket>();
+                    message.Enqueue(packet);
                     session._messages.TryAdd(session._count, message);
                 }
-                message.Enqueue(packet);
+                else
+                {
+                    var message = new Queue<NetPacket>();
+                    if (session._messages.TryGetValue(session._count, out message))
+                    {
+                        message.Enqueue(packet);
+                    }
+                }
+
             }
 
 
