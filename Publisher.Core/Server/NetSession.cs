@@ -14,6 +14,8 @@ namespace Publisher.Core.Server
 {
     public class NetSession : AppSession<NetSession, NetRequestInfo>
     {
+        public Encoding _encoding { get { return Encoding.UTF8; } }
+
         private ILogger _log = LoggerFactory.GetLogger2("NetSession");
 
         private CancellationTokenSource _tokenSource;
@@ -98,8 +100,8 @@ namespace Publisher.Core.Server
                     var count = packet.PacketCount;
                     var type = (int)packet.Type;
 
-                    //如果第一个数据包的索引不是1  是有问题的
-                    if (index != 1)
+                    //校验
+                    if (index != 1 || count < 1)
                         return;
 
                     if (count == 1)
@@ -120,8 +122,8 @@ namespace Publisher.Core.Server
                             this.Send("不支持的命令");
                             return;
                         }
-
-                        
+                        //第一个包为文件信息
+                        var fileInfo = _encoding.GetString(packet.Body);
                     }
                 }
                 catch (Exception ex)
@@ -142,7 +144,7 @@ namespace Publisher.Core.Server
             string cmd = "";
             try
             {
-                cmd = Encoding.UTF8.GetString(packet.Body);
+                cmd = _encoding.GetString(packet.Body);
                 var result = CmdHelper.ExecuteCmd(cmd);
 
                 var bytes = Encoding.Default.GetBytes(result);
