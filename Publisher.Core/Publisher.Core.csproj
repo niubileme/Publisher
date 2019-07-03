@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="ClientService.cs" />
     <Compile Include="Common\CmdHelper.cs" />
+    <Compile Include="Common\FileHelper.cs" />
     <Compile Include="Common\SocketHelper.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\Log4Net\Log4NetLogger.cs" />

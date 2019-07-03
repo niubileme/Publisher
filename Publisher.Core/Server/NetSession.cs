@@ -5,6 +5,7 @@ using SuperSocket.SocketBase.Protocol;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -80,7 +81,7 @@ namespace Publisher.Core.Server
                     var packets = new Queue<NetPacket>();
                     if (_messages.TryGetValue(_index, out packets))
                     {
-                        ProcessPackets(packets);
+                        ProcessPackets(_index, packets);
                         _index++;
                     }
                 }
@@ -88,7 +89,7 @@ namespace Publisher.Core.Server
             }
         }
 
-        private void ProcessPackets(Queue<NetPacket> packets)
+        private void ProcessPackets(int messagesIndex, Queue<NetPacket> packets)
         {
             Task.Factory.StartNew(() =>
             {
@@ -112,7 +113,7 @@ namespace Publisher.Core.Server
                             this.Send("不支持的命令");
                             return;
                         }
-                        ExcuteCMD(packet);
+                        ExecuteCommand(packet);
                     }
                     else
                     {
@@ -124,22 +125,56 @@ namespace Publisher.Core.Server
                         }
                         //第一个包为文件信息
                         var fileInfo = _encoding.GetString(packet.Body);
+                        var fileInfoSplid = fileInfo.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                        if (string.IsNullOrWhiteSpace(fileInfo) || fileInfoSplid.Length != 2)
+                            return;
+                        var fileName = fileInfoSplid[0];
+                        var fileOutPut = fileInfoSplid[1];
+
+                        //临时文件
+                        var tempPath = FileHelper.GetRandomTempFile(".zip");
+                        using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
+                        {
+                            //是否最后一个包
+                            var isEnd = false;
+                            while (!isEnd)
+                            {
+                                if (packets.Count > 0)
+                                {
+                                    var currentPacket = packets.Dequeue();
+                                    var currentIndex = currentPacket.PacketIndex;
+                                    if (currentIndex == count)
+                                        isEnd = true;
+
+                                    var body = currentPacket.Body;
+                                    fs.Write(body, 0, body.Length);
+                                }
+                                else
+                                {
+                                    Thread.Sleep(100);
+                                }
+                            }
+                        }
+
+                        this.Send(tempPath);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("process packets failed! " + ex.Message);
-                    this.Send("");
+                    _log.Error("ProcessPackets Failed! " + ex.Message);
+                    this.Send("ProcessPackets Failed!");
                 }
                 finally
                 {
-
+                    //清理
+                    var message = new Queue<NetPacket>();
+                    _messages.TryRemove(messagesIndex, out message);
                 }
             });
         }
 
 
-        private void ExcuteCMD(NetPacket packet)
+        private void ExecuteCommand(NetPacket packet)
         {
             string cmd = "";
             try
@@ -157,22 +192,5 @@ namespace Publisher.Core.Server
             }
         }
 
-        private void Save(NetPacket packet)
-        {
-            string cmd = "";
-            try
-            {
-                cmd = Encoding.UTF8.GetString(packet.Body);
-                var result = CmdHelper.ExecuteCmd(cmd);
-
-                var bytes = Encoding.Default.GetBytes(result);
-                this.Send(bytes, 0, bytes.Length);
-            }
-            catch (Exception ex)
-            {
-                _log.Error("cmd命令:" + cmd, ex);
-                this.Send("ExecuteCommand CMD Failed!" + Environment.NewLine + cmd + Environment.NewLine + ex.Message);
-            }
-        }
     }
 }
