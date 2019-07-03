@@ -145,34 +145,5 @@ namespace Publisher.Core
 
         }
 
-
-        private void ProcessSingleText(NetSession session, NetPacket packet)
-        {
-            string cmd = "";
-            try
-            {
-                cmd = Encoding.UTF8.GetString(packet.Body);
-                var result = CmdHelper.ExecuteCmd(cmd);
-
-                var bytes = Encoding.Default.GetBytes(result);
-                session.Send(bytes, 0, bytes.Length);
-            }
-            catch (Exception ex)
-            {
-                _log.Error("cmd命令:" + cmd, ex);
-                session.Send("ExecuteCommand CMD Failed!" + Environment.NewLine + cmd + Environment.NewLine + ex.Message);
-            }
-        }
-
-        private void ProcessSingleFile(NetSession session, NetPacket packet)
-        {
-
-        }
-
-        private void ProcessMultiplePackets(NetSession session)
-        {
-
-        }
-
     }
 }

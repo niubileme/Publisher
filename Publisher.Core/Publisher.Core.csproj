@@ -64,8 +64,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerService.cs" />
     <Compile Include="ServerSettings.cs" />
-    <Compile Include="Server\Command\CmdCommand.cs" />
-    <Compile Include="Server\Command\FileCommand.cs" />
     <Compile Include="Server\NetPacket.cs" />
     <Compile Include="Server\NetReceiveFilter.cs" />
     <Compile Include="Server\NetReceiveFilterFactory.cs" />
@@ -76,6 +74,8 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Client\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

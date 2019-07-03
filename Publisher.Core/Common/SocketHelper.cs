@@ -44,48 +44,61 @@ namespace PublisherCore.Helper
             return socket.Connected;
         }
 
-        public static string Receive(Socket socket, int timeout = 0, int receiveTimeout = 60)
+        public static string Receive(Socket socket, int receiveTimeout = 60)
         {
-            long ticks = DateTime.Now.Ticks;
-            socket.ReceiveTimeout = timeout * 1000;
+            socket.ReceiveTimeout = receiveTimeout * 1000;
             List<byte> list = new List<byte>();
-            byte[] array = new byte[1024];
+            byte[] array = new byte[1024 * 1024];
+            int bytes = 0;
             while (true)
             {
-                int num;
-                if ((num = socket.Receive(array)) > 0)
-                {
-                    for (int i = 0; i < num; i++)
-                    {
-                        list.Add(array[i]);
-                    }
-                    if (num >= array.Length)
-                    {
-                        continue;
-                    }
-                }
-                if (IsComplete(list))
-                {
+                bytes = socket.Receive(array);
+                if (bytes == 0)
                     break;
-                }
-                if (timeout > 0)
-                {
-                    int timeout2 = GetTimeout(ticks, timeout);
-                    if (timeout2 <= 0)
-                    {
-                        goto Block_4;
-                    }
-                    socket.ReceiveTimeout = timeout2 * 1000;
-                }
-                else
-                {
-                    timeout = receiveTimeout;
-                    socket.ReceiveTimeout = timeout * 1000;
-                }
+
+                list.AddRange(array);
             }
             return Encoding.UTF8.GetString(list.ToArray(), 0, list.Count);
-        Block_4:
-            throw new Exception("数据未能完整获取");
+            //    long ticks = DateTime.Now.Ticks;
+            //    socket.ReceiveTimeout = timeout * 1000;
+            //    List<byte> list = new List<byte>();
+            //    byte[] array = new byte[1024];
+            //    while (true)
+            //    {
+            //        int num;
+            //        if ((num = socket.Receive(array)) > 0)
+            //        {
+            //            for (int i = 0; i < num; i++)
+            //            {
+            //                list.Add(array[i]);
+            //            }
+            //            if (num >= array.Length)
+            //            {
+            //                continue;
+            //            }
+            //        }
+            //        if (IsComplete(list))
+            //        {
+            //            break;
+            //        }
+            //        if (timeout > 0)
+            //        {
+            //            int timeout2 = GetTimeout(ticks, timeout);
+            //            if (timeout2 <= 0)
+            //            {
+            //                goto Block_4;
+            //            }
+            //            socket.ReceiveTimeout = timeout2 * 1000;
+            //        }
+            //        else
+            //        {
+            //            timeout = receiveTimeout;
+            //            socket.ReceiveTimeout = timeout * 1000;
+            //        }
+            //    }
+            //    return Encoding.UTF8.GetString(list.ToArray(), 0, list.Count);
+            //Block_4:
+            //    throw new Exception("数据未能完整获取");
         }
 
         public static int Send(Socket socket, string msg, int timeout = 0)
