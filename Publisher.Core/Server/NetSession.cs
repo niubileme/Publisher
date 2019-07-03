@@ -40,9 +40,7 @@ namespace Publisher.Core.Server
         protected override void OnSessionStarted()
         {
             Console.WriteLine("新用户连接");
-            _task = Task.Run(ProcessRequest, _token);
-            _task.Start();
-
+            _task = Task.Run(()=> { ProcessRequest(); }, _token);
             base.OnSessionStarted();
         }
 
@@ -107,6 +105,7 @@ namespace Publisher.Core.Server
 
                     if (count == 1)
                     {
+                        this.Send("不支持的命令");return;
                         //一个数据包 cmd命令
                         if (type != 0)
                         {

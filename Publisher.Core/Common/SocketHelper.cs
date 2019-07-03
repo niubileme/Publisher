@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PublisherCore.Helper
 {
@@ -13,13 +11,13 @@ namespace PublisherCore.Helper
     {
         public static Socket GetSocket()
         {
-            uint num = 0u;
-            byte[] array = new byte[Marshal.SizeOf(num) * 3];
-            BitConverter.GetBytes(1u).CopyTo(array, 0);
-            BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num));
-            BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num) * 2);
+            //uint num = 0u;
+            //byte[] array = new byte[Marshal.SizeOf(num) * 3];
+            //BitConverter.GetBytes(1u).CopyTo(array, 0);
+            //BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num));
+            //BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num) * 2);
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.IOControl(IOControlCode.KeepAliveValues, array, null);
+            //socket.IOControl(IOControlCode.KeepAliveValues, array, null);
             return socket;
         }
 
@@ -46,17 +44,22 @@ namespace PublisherCore.Helper
 
         public static string Receive(Socket socket, int receiveTimeout = 60)
         {
-            socket.ReceiveTimeout = receiveTimeout * 1000;
+            //socket.ReceiveTimeout = receiveTimeout * 1000;
             List<byte> list = new List<byte>();
-            byte[] array = new byte[1024 * 1024];
-            int bytes = 0;
+            //接收缓冲区
+            byte[] buffer = new byte[1024];
             while (true)
             {
-                bytes = socket.Receive(array);
-                if (bytes == 0)
+                int n;
+                if ((n = socket.Receive(buffer)) > 0)
+                {
+                    for (int i = 0; i < n; i++)
+                    {
+                        list.Add(buffer[i]);
+                    }
+                }
+                if (n == 0)
                     break;
-
-                list.AddRange(array);
             }
             return Encoding.UTF8.GetString(list.ToArray(), 0, list.Count);
             //    long ticks = DateTime.Now.Ticks;

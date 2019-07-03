@@ -2,7 +2,6 @@
 using PublisherCore.Helper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -59,8 +58,13 @@ namespace Publisher.Core
             byte[] body = Encoding.UTF8.GetBytes(command);
             SendPacket(1, 1, body);
 
-            var result = SocketHelper.Receive(_socket);
-            return result;
+            Task.Run(() =>
+            {
+                var result = SocketHelper.Receive(_socket);
+                Console.WriteLine(result);
+            });
+
+            return "";
         }
 
 
