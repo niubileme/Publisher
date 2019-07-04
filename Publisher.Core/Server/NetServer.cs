@@ -11,8 +11,8 @@ namespace Publisher.Core.Server
 {
     public class NetServer : AppServer<NetSession, NetRequestInfo>
     {
-        public NetServer()  
-            :base(new  NetReceiveFilterFactory() )
+        public NetServer()
+            : base(new NetReceiveFilterFactory())
         {
 
         }

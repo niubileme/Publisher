@@ -105,11 +105,10 @@ namespace Publisher.Core.Server
 
                     if (count == 1)
                     {
-                        this.Send("不支持的命令");return;
                         //一个数据包 cmd命令
                         if (type != 0)
                         {
-                            this.Send("不支持的命令");
+                            this.SendMessage("不支持的命令");
                             return;
                         }
                         ExecuteCommand(packet);
@@ -119,7 +118,7 @@ namespace Publisher.Core.Server
                         //多个数据包 文件上传
                         if (type != 1)
                         {
-                            this.Send("不支持的命令");
+                            this.SendMessage("不支持的命令");
                             return;
                         }
                         //第一个包为文件信息
@@ -155,13 +154,13 @@ namespace Publisher.Core.Server
                             }
                         }
 
-                        this.Send(tempPath);
+                        this.SendMessage(tempPath);
                     }
                 }
                 catch (Exception ex)
                 {
                     _log.Error("ProcessPackets Failed! " + ex.Message);
-                    this.Send("ProcessPackets Failed!");
+                    this.SendMessage("ProcessPackets Failed!");
                 }
                 finally
                 {
@@ -181,14 +180,20 @@ namespace Publisher.Core.Server
                 cmd = _encoding.GetString(packet.Body);
                 var result = CmdHelper.ExecuteCmd(cmd);
 
-                var bytes = Encoding.Default.GetBytes(result);
-                this.Send(bytes, 0, bytes.Length);
+                this.SendMessage(result);
             }
             catch (Exception ex)
             {
                 _log.Error("cmd命令:" + cmd, ex);
-                this.Send("ExecuteCommand CMD Failed!" + Environment.NewLine + cmd + Environment.NewLine + ex.Message);
+                this.SendMessage("ExecuteCommand CMD Failed!" + Environment.NewLine + cmd + Environment.NewLine + ex.Message);
             }
+        }
+
+
+        private void SendMessage(string msg)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(msg + "#IZK");
+            this.Send(bytes,0,bytes.Length);
         }
 
     }

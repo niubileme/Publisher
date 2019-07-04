@@ -11,13 +11,13 @@ namespace PublisherCore.Helper
     {
         public static Socket GetSocket()
         {
-            //uint num = 0u;
-            //byte[] array = new byte[Marshal.SizeOf(num) * 3];
-            //BitConverter.GetBytes(1u).CopyTo(array, 0);
-            //BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num));
-            //BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num) * 2);
+            uint num = 0u;
+            byte[] array = new byte[Marshal.SizeOf(num) * 3];
+            BitConverter.GetBytes(1u).CopyTo(array, 0);
+            BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num));
+            BitConverter.GetBytes(15000u).CopyTo(array, Marshal.SizeOf(num) * 2);
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            //socket.IOControl(IOControlCode.KeepAliveValues, array, null);
+            socket.IOControl(IOControlCode.KeepAliveValues, array, null);
             return socket;
         }
 
@@ -58,50 +58,18 @@ namespace PublisherCore.Helper
                         list.Add(buffer[i]);
                     }
                 }
-                if (n == 0)
+                if (IsComplete(list))
+                {
                     break;
+                }
+                if (n == 0)
+                {
+                    Console.WriteLine("断开连接");
+                    break;
+                }
             }
             return Encoding.UTF8.GetString(list.ToArray(), 0, list.Count);
-            //    long ticks = DateTime.Now.Ticks;
-            //    socket.ReceiveTimeout = timeout * 1000;
-            //    List<byte> list = new List<byte>();
-            //    byte[] array = new byte[1024];
-            //    while (true)
-            //    {
-            //        int num;
-            //        if ((num = socket.Receive(array)) > 0)
-            //        {
-            //            for (int i = 0; i < num; i++)
-            //            {
-            //                list.Add(array[i]);
-            //            }
-            //            if (num >= array.Length)
-            //            {
-            //                continue;
-            //            }
-            //        }
-            //        if (IsComplete(list))
-            //        {
-            //            break;
-            //        }
-            //        if (timeout > 0)
-            //        {
-            //            int timeout2 = GetTimeout(ticks, timeout);
-            //            if (timeout2 <= 0)
-            //            {
-            //                goto Block_4;
-            //            }
-            //            socket.ReceiveTimeout = timeout2 * 1000;
-            //        }
-            //        else
-            //        {
-            //            timeout = receiveTimeout;
-            //            socket.ReceiveTimeout = timeout * 1000;
-            //        }
-            //    }
-            //    return Encoding.UTF8.GetString(list.ToArray(), 0, list.Count);
-            //Block_4:
-            //    throw new Exception("数据未能完整获取");
+            
         }
 
         public static int Send(Socket socket, string msg, int timeout = 0)

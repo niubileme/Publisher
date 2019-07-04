@@ -13,24 +13,30 @@ namespace Publisher.Core.Common
         /// <summary>
         /// 执行Cmd命令
         /// </summary>
-        public static string ExecuteCmd(string cmdstr)
+        public static string ExecuteCmd(string cmd)
         {
+            // &:同时执行两个命令
+            // |:将上一个命令的输出,作为下一个命令的输入
+            // &&：当&&前的命令成功时,才执行&&后的命令
+            // ||：当||前的命令失败时,才执行||后的命令]]>
+            //不管命令是否成功均执行exit命令，否则当调用ReadToEnd()方法时，会处于假死状态
+            cmd = cmd.Trim().TrimEnd('&') + "&exit";
+
             using (Process process = new Process())
             {
                 process.StartInfo.FileName = "cmd.exe";
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.UseShellExecute = false;//是否使用操作系统shell启动
+                process.StartInfo.CreateNoWindow = true;//不显示程序窗口
+                process.StartInfo.RedirectStandardInput = true;//接受来自调用程序的输入信息
+                process.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
+                process.StartInfo.RedirectStandardError = true;//重定向标准错误输出
                 process.Start();
 
-                process.StandardInput.WriteLine(cmdstr);
+                process.StandardInput.WriteLine(cmd);
                 process.StandardInput.AutoFlush = true;
-                process.StandardInput.WriteLine("exit");
-
-                StreamReader reader = process.StandardOutput;
-
-                string output = reader.ReadToEnd();
+               
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
                 return output;
             }
 

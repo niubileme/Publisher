@@ -16,7 +16,9 @@ namespace PublisherClient
             var client = ClientService.Connect("127.0.0.1", 2012);
             if (client.Connected)
             {
-                var result = client.ExcuteCommand("ipconfig");
+                var cmd = "ipconfig";
+                Console.WriteLine("执行:" + cmd);
+                var result = client.ExcuteCommand(cmd);
                 Console.WriteLine(result);
             }
 

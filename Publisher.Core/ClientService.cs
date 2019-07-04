@@ -55,16 +55,19 @@ namespace Publisher.Core
 
         public string ExcuteCommand(string command)
         {
-            byte[] body = Encoding.UTF8.GetBytes(command);
-            SendPacket(1, 1, body);
-
-            Task.Run(() =>
+            try
             {
-                var result = SocketHelper.Receive(_socket);
-                Console.WriteLine(result);
-            });
+                byte[] body = Encoding.UTF8.GetBytes(command);
+                SendPacket(1, 1, body);
 
-            return "";
+                var result = SocketHelper.Receive(_socket);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _log.Error("ExcuteCommand", ex);
+                return ex.Message;
+            }
         }
 
 
