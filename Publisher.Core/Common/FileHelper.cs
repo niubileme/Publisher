@@ -31,8 +31,8 @@ namespace Publisher.Core.Common
                 extension = "." + extension;
 
             var tempPath = Path.GetTempPath();
-            var randomName = Path.GetRandomFileName();
-            return Path.Combine(tempPath, "publisher", randomName, extension);
+            var randomName = Path.GetRandomFileName() + extension;
+            return Path.Combine(tempPath, randomName);
         }
     }
 }

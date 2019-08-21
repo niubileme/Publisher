@@ -105,7 +105,7 @@ namespace Publisher.Core.Server
 
                     if (count == 1)
                     {
-                        //一个数据包 cmd命令
+                        //一个数据包 只能是文本
                         if (type != 0)
                         {
                             this.SendMessage("不支持的命令");
@@ -130,6 +130,7 @@ namespace Publisher.Core.Server
                         var fileOutPut = fileInfoSplid[1];
 
                         //临时文件
+                        var extension = Path.GetExtension(fileName);
                         var tempPath = FileHelper.GetRandomTempFile(".zip");
                         using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write))
                         {
@@ -159,7 +160,7 @@ namespace Publisher.Core.Server
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("ProcessPackets Failed! " + ex.Message);
+                    _log.Error("ProcessPackets Failed! ",ex);
                     this.SendMessage("ProcessPackets Failed!");
                 }
                 finally

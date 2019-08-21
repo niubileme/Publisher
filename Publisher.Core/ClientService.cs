@@ -2,6 +2,7 @@
 using PublisherCore.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -73,8 +74,14 @@ namespace Publisher.Core
 
         public string TransferFile(string path)
         {
+            var bytes = File.ReadAllBytes(path);
 
-            return "";
+            var fileInfo= Encoding.UTF8.GetBytes("swiper-4.5.0.zip,1");
+            SendPacket(1, 2, fileInfo,true);
+            SendPacket(2, 2, bytes, true);
+
+            var result = SocketHelper.Receive(_socket);
+            return result;
         }
 
 

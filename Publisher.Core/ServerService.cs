@@ -80,7 +80,7 @@ namespace Publisher.Core
             lock (_obj)
             {
                 var packet = requestInfo.Packet;
-
+                Console.WriteLine(packet);
                 //var message = new Queue<NetPacket>();
                 //if (!session._messages.TryGetValue(session._count, out message))
                 //{

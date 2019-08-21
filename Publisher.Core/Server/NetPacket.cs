@@ -14,7 +14,7 @@ namespace Publisher.Core.Server
         public string Start { get; set; }
 
         /// <summary>
-        /// 消息类型 1字节 
+        /// 消息类型 1字节  
         /// </summary>
         public byte Type { get; set; }
 
