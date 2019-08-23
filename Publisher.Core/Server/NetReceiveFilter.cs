@@ -33,7 +33,7 @@ namespace Publisher.Core.Server
             Encoding encoding = Encoding.UTF8;
 
             rest = 0;
-            //6+1+4+2+2+1+4
+            //6+1+4+2+2+1+4 小于协议头，不是完整数据包
             if (length <= 20)
                 return null;
 

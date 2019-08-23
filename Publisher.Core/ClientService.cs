@@ -16,6 +16,7 @@ namespace Publisher.Core
 
         private static readonly object _obj = new object();
         private static ClientService _instance = null;
+        private static int _bufferLength = 2048;
 
         public IPEndPoint RemoteAddress { get; private set; }
         public bool Connected { get; private set; }
@@ -74,11 +75,28 @@ namespace Publisher.Core
 
         public string TransferFile(string path)
         {
+            var isFile = true;
             var bytes = File.ReadAllBytes(path);
 
-            var fileInfo= Encoding.UTF8.GetBytes("swiper-4.5.0.zip,1");
-            SendPacket(1, 2, fileInfo,true);
-            SendPacket(2, 2, bytes, true);
+            var fileInfo = Encoding.UTF8.GetBytes("swiper-4.5.0.zip,1");
+            //SendPacket(1, 2, fileInfo,isFile);
+
+            var count = (int)Math.Ceiling(bytes.Length / _bufferLength * 1.0);
+            var totalCount = (ushort)(count + 1);
+
+            SendPacket(1, totalCount, fileInfo, isFile);
+
+            var startIndex = 0;
+            var length = _bufferLength;
+            for (int i = 1; i <= count; i++)
+            {
+                ushort index = (ushort)(i + 1);
+                byte[] data = new byte[length];
+                Buffer.BlockCopy(bytes, startIndex, data, 0, length);
+                SendPacket(index, totalCount, data, isFile);
+                startIndex = _bufferLength;
+                length = i == count ? bytes.Length - _bufferLength : _bufferLength;
+            }
 
             var result = SocketHelper.Receive(_socket);
             return result;

@@ -13,22 +13,28 @@ namespace PublisherClient
     {
         static void Main(string[] args)
         {
-            var client = ClientService.Connect("127.0.0.1", 2012);
-            if (client.Connected)
+            try
             {
-                //var cmd = "ipconfig";
-                //for (int i = 0; i < 2; i++)
-                //{
-                //    Console.WriteLine("执行:" + cmd);
-                //    var result = client.ExcuteCommand(cmd);
-                //    Console.WriteLine(result);
+                var client = ClientService.Connect("127.0.0.1", 2012);
+                if (client.Connected)
+                {
+                    //var cmd = "ipconfig";
+                    //for (int i = 0; i < 2; i++)
+                    //{
+                    //    Console.WriteLine("执行:" + cmd);
+                    //    var result = client.ExcuteCommand(cmd);
+                    //    Console.WriteLine(result);
 
-                //}
+                    //}
 
-                var r=client.TransferFile("swiper-4.5.0.zip");
-                Console.WriteLine(r);
+                    var r = client.TransferFile("swiper-4.5.0.zip");
+                    Console.WriteLine(r);
+                }
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             Console.WriteLine("over");
             Console.ReadKey();
         }
